@@ -22,7 +22,6 @@ class opcode {
         
     public:
     void arithmeticAndLogicalOperation(string operationCode, vector<string>& operands);
-    void twoOperandOperation(string operationCode, vector<string>& operands);
     void CMP(vector<string> operands);
     void MOV(const vector<string>& operands);
 
@@ -33,11 +32,11 @@ class opcode {
 
 
     void printCode();
-    
+
     bool checkRegister(const string& token, int& reg_num) const;
     bool checkOperand(const string& s, uint32_t& value);
 
-    string removeWhiteSpace(const string& str) const;
+    //string removeWhiteSpace(const string& str) const;
 
 };
 

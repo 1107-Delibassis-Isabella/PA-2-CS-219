@@ -1,3 +1,6 @@
+//Author: Isabella Delibassis
+//CS 219 Computer Organization
+
 #include <sstream>
 #include <fstream>
 #include "opcode.h"
@@ -15,49 +18,48 @@ int main() {
     if (!openFile.is_open()) {
         cout << "Could not open the file" << endl; 
     } else {
-        string rawLine;
-         while (getline(openFile, rawLine)) {
+        string initialLine;
+         while (getline(openFile, initialLine)) {
             int opCount = 0;
-            stringstream ss(rawLine);
-                if (rawLine.empty() == false) {
+            stringstream ss(initialLine);
+                if (initialLine.empty() == false) {
                     cout << ss.str() << endl;
-                    string line = rawLine;
-    size_t comment_pos = line.find(';');
-    if (comment_pos != string::npos) {
-        line = line.substr(0, comment_pos);
-    }
+                    string line = initialLine;
+    
 
-    line = i.removeWhiteSpace(line);
-    if (line.empty()) {
+
+    //line = i.removeWhiteSpace(line);
+    /*if (line.empty()) {
         
-    }
-    stringstream ss(line);
+    }*/
+    stringstream ss1(line);
     string opcode;
     ss >> opcode;
 
     string operandsStr;
-    getline(ss, operandsStr);
+    getline(ss1, operandsStr);
 
-    vector<string> ss1;
+    vector<string> ss2;
     stringstream opSS(operandsStr);
     string s;
     while (getline(opSS, s, ',')) {
-        string updatedS = i.removeWhiteSpace(s);
+        string updatedS = s;
+        //string updatedS = i.removeWhiteSpace(s);
         if (!updatedS.empty()) {
-            ss1.push_back(updatedS);
+            ss2.push_back(updatedS); //will add each operand into the operand list and determine which operation to use later
         }
     }
 
     if (opcode == "ADD" || opcode == "SUB" || opcode == "AND" || opcode == "OR" || opcode == "XOR") {
-        i.arithmeticAndLogicalOperation(opcode, ss1);
+        i.arithmeticAndLogicalOperation(opcode, ss2); //requires three operands
     } else if (opcode == "MOV") {
-        i.MOV(ss1);
+        i.MOV(ss2); //requires two operands
     } else if (opcode == "CMP") {
-        i.CMP(ss1);
+        i.CMP(ss2); //requires two operands
     } else if (opcode == "LOAD" || opcode == "STORE") {
-        i.dataTransfer(opcode, ss1);
+        i.dataTransfer(opcode, ss2); //requires two operands
     } else if (opcode == "BEQ" || opcode == "BNE" || opcode == "BAL") {
-        i.branch(opcode, ss1);
+        i.branch(opcode, ss2); //will only print out something
     } else {
         cout << "Invalid Opcode.\n" << endl;
     }

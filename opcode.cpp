@@ -5,10 +5,24 @@ void opcode::arithmeticAndLogicalOperation(string operationCode, vector<string>&
         cout << "Invalid Instruction. Invalid Operand Count." << endl;
         return;
     } else {
-        int registerDestination, op1, op2;
-        if ((checkRegister(operands[0], registerDestination) == false) || (checkRegister(operands[1], op1) == false) || (checkRegister(operands[2], op2) == false) ) {
+        int registerDestination, op1; 
+        uint32_t op2;
+        if (!checkRegister(operands[0], registerDestination)) {
             cout << "Invalid Instruction" << endl;
-        } else {
+            return;
+        }
+        if (!checkRegister(operands[1], op1)) {
+            cout << "Invalid Instruction" << endl;
+            return;
+        } 
+        
+        if (!checkOperand(operands[2], op2)) {
+            //there is something wrong with this if statement
+            cout << "Invalid Instruction" << endl;
+            return;
+        } 
+
+
             uint16_t r1 = registerArray[op1];
             uint16_t r2 = registerArray[op2];
             uint16_t result = 0;
@@ -26,23 +40,8 @@ void opcode::arithmeticAndLogicalOperation(string operationCode, vector<string>&
             } else if (operationCode == "XOR") {
                 result = r1 ^ r2;
             }
-        }
         
-
-    
-    }
-    printCode();
-}
-
-void opcode::twoOperandOperation(string operationCode, vector<string>& operands) {
-    if (operationCode == "MOV") {
-        MOV(operands);
         printCode();
-    } else if (operationCode == "CMP") {
-        CMP(operands);
-        printCode();
-    } else if (operationCode == "ADD" || operationCode == "SUB" || operationCode == "AND" || operationCode == "OR" || operationCode == "XOR") {
-        cout << "Invalid Instruction. Invalid Operand Count." << endl;
     }
 }
 
@@ -53,7 +52,6 @@ void opcode::CMP(vector<string> operands) {
     int op1, op2;
     if ((checkRegister(operands[0], op1) == false) || (checkRegister(operands[1], op2) == false) ) {
         cout << "Invalid Instruction" << endl;
-        printCode();
         return;
     }
     uint16_t r1 = registerArray[op1];
@@ -64,16 +62,22 @@ void opcode::CMP(vector<string> operands) {
     } else {
         z = 0;
     }
+    printCode();
 }
 void opcode::MOV(const vector<string>& operands) {
     if (operands.size() != 2) {
-        cout << "TESTING" << endl;
+        //cout << "TESTING" << endl;
         return;
     }
-    int registerDestination, op1;
-    if ((checkRegister(operands[0], registerDestination) == false) || (checkRegister(operands[1], op1) == false) ) {
+    int registerDestination;
+    uint32_t op1;
+    if (checkRegister(operands[0], registerDestination) == false) {
         cout << "Invalid Instruction" << endl;
-        printCode();
+        return;
+    }
+    
+    if (checkOperand(operands[1], op1) == false)  {
+        cout << "Invalid Instruction for MOV" << endl;
         return;
     }
     uint16_t r1 = registerArray[op1];
@@ -104,7 +108,7 @@ void opcode::branch(string operationCode, vector<string> name) {
             cout << "Always branch to " << name[0] << endl;
         }
     }
-    printCode();
+    
 }
 
 void opcode::dataTransfer(string operation, vector<string>& operands) {
@@ -121,11 +125,12 @@ void opcode::dataTransfer(string operation, vector<string>& operands) {
         int index = getMemoryIndex(memoryAddress);
         if (operation == "LOAD") {
             registerArray[registerDestination] = memoryArray[index];
+            printCode();
         } if (operation == "STORE") {
             memoryArray[index] = registerArray[registerDestination];
+            printCode();
         }
     }
-    printCode();
 }
 int opcode::getMemoryIndex(uint32_t address) {
     if (address < beginningAddress || address > endingAddress) {
@@ -197,7 +202,7 @@ bool opcode::checkOperand(const string& s, uint32_t& value) {
     return false;
 }
 
-string opcode::removeWhiteSpace(const string& str) const {
+/*string opcode::removeWhiteSpace(const string& str) const {
     size_t start = 0;
     while (start < str.length() && (str[start] == ' ' || str[start] == '\t' || str[start] == '\r' || str[start] == '\n')) {
         start++;
@@ -209,4 +214,4 @@ string opcode::removeWhiteSpace(const string& str) const {
     }
 
     return str.substr(start, end - start);
-}
+}*/
